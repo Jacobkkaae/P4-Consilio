@@ -2,6 +2,12 @@ import SymbolTable.SymbolTable;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.Scanner;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -17,8 +23,8 @@ import SymbolTable.SymbolTableBuilder;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        String domainSource = Files.readString(Paths.get("./src/main/java/testDomain.consilio"));
-        String problemSource = Files.readString(Paths.get("./src/main/java/testProblem.consilio"));
+        String domainSource = readResourceFile("testDomain.consilio");
+        String problemSource = readResourceFile("testProblem.consilio");
 
         /*
         CharStream domainInput = CharStreams.fromString(domainSource);
@@ -85,4 +91,15 @@ public class Main {
         new ProblemVisitor().visit(problemTree);
 */
     }
+
+    private static String readResourceFile(String fileName) throws IOException {
+        InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(fileName);
+        if (inputStream == null) {
+            throw new IOException("Resource not found: " + fileName);
+        }
+        try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
+            return scanner.useDelimiter("\\A").next();
+        }
+    }
+
 }
