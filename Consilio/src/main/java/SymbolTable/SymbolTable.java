@@ -3,16 +3,16 @@ package SymbolTable;
 import visitor.ASTNode;
 import java.util.*;
 
-// vi skal lave et openScope() og et closeScope(), enterSymbol(), retrieveSymbol(), (declaredLocally())*
-
 public class SymbolTable {
 
     // Måske ændrer til ArrayList eller Stack men Deque er mere eller mindre en stack der strictly følger LIFO
     private final Deque<Map<String, Symbol>> scopeStack = new ArrayDeque<>();
 
+    // Behøver ikke være en klasse.
     public class ReservedKeywords {
         private static final List<String> reservedKeywords = Arrays.asList(
-                "Action", "..."
+                "define", "domain", "import", "Action", "type", "if",
+                "objects", "initialState", "goalState", "int", "boolean"
         );
 
         public static List<String> getReservedKeywords() {

@@ -28,21 +28,34 @@ public class DomainVisitor extends GenericVisitor {
 
     @Override
     public ASTNode visitType(ConsilioParser.TypeContext ctx) {
-        ASTNode typeNode = new ASTNode("Type: " + ctx.IDENTIFIER().getText());
+        ASTNode typeNode = new ASTNode("TypeDeclaration");
+
+        String Name = ctx.IDENTIFIER().getText();
+
+        ASTNode typeAttr = new ASTNode("attributes: ");
+        ASTNode typeName = new ASTNode("Name: " + Name);
+
+        typeNode.adoptChildren(typeName, typeAttr);
 
         for (ConsilioParser.AttributeContext attrCtx : ctx.attribute()) {
             ASTNode attrNode = visit(attrCtx);
-            typeNode.adoptChildren(attrNode);
+            typeAttr.adoptChildren(attrNode);
         }
-
         return typeNode;
     }
 
     @Override
     public ASTNode visitAttribute(ConsilioParser.AttributeContext ctx) {
+        ASTNode attrNode = new ASTNode("Attribute:");
         String attrName = ctx.IDENTIFIER().getText();
         String attrType = ctx.value().getText();
-        return new ASTNode("Attribute: " + attrName + " : " + attrType);
+
+        ASTNode attrNameNode = new ASTNode("Name: " + attrName);
+        ASTNode attrTypeNode = new ASTNode("Type: " + attrType);
+
+        attrNode.adoptChildren(attrNameNode, attrTypeNode);
+
+        return attrNode;
     }
 
     @Override

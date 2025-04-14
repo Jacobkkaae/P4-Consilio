@@ -25,11 +25,11 @@ public class ProblemVisitor extends GenericVisitor {
         for (ConsilioParser.ArrayInitializerContext arrayInitCtx : ctx.objectBody().arrayInitializer()) {
             ASTNode arrayInit = new ASTNode("ArrayInit");
 
-            String type = arrayInitCtx.IDENTIFIER(0).getText();
-            String name = arrayInitCtx.IDENTIFIER(1).getText();
+            String name = arrayInitCtx.IDENTIFIER(0).getText();
+            String type = arrayInitCtx.IDENTIFIER(1).getText();
 
-            ASTNode typeName = new ASTNode("Type: " + type);
-            ASTNode arrayName = new ASTNode("Name: " + name);
+            ASTNode typeName = new ASTNode("Type: " + name);
+            ASTNode arrayName = new ASTNode("Name: " + type);
             ASTNode values = visit(arrayInitCtx.arrayBody());
 
             arrayInit.adoptChildren(typeName, arrayName, values);

@@ -14,17 +14,20 @@ public class SymbolTableBuilder {
 
     private void processNode(ASTNode node) {
         switch (node.type) {
-            case "Program", "Action" -> symTable.openScope();
+            case "Program" -> symTable.openScope();
 
-            case "type" -> {
-
+            case "TypeDeclaration" -> {
+                String type = "Type";
+                String name = node.children.getFirst().type.replace("Name: ", "");
+                System.out.println(name);
+                symTable.enterSymbol(name, type);
             }
 
             case "ArrayInit" -> {
                 String type = node.children.get(0).type.replace("Type: ", "");
                 System.out.println(type);
                 ASTNode values = node.children.get(2);
-                //System.out.println(values.toString());
+                System.out.println(values.toString());
                 for (ASTNode value : values.children) {
                     String name = value.type.replace("Object: ", "");
                     symTable.enterSymbol(name, type);
