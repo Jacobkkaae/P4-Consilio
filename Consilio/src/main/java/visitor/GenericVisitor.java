@@ -22,23 +22,15 @@ public class GenericVisitor extends ConsilioBaseVisitor<ASTNode> {
 
 
     @Override
-    public ASTNode visitStatement(antlr.ConsilioParser.StatementContext ctx) {
+    public ASTNode visitStatement(ConsilioParser.StatementContext ctx) {
         if (ctx.ifBlock() != null) {
             return visit(ctx.ifBlock());
         } else if (ctx.assignment() != null) {
             return visit(ctx.assignment());
-        } else if (ctx.statement().size() == 2) {
-            ASTNode concat = new ASTNode("StatementConcat");
-
-            ASTNode left = visit(ctx.statement(0));
-            ASTNode right = visit(ctx.statement(1));
-
-            concat.adoptChildren(left, right);
-            return concat;
         }
-
-        return null;
+        return new ASTNode("EmptyStatement");
     }
+
 
     @Override
     public ASTNode visitAssignment(antlr.ConsilioParser.AssignmentContext ctx) {
@@ -55,15 +47,20 @@ public class GenericVisitor extends ConsilioBaseVisitor<ASTNode> {
     }
 
     @Override
-    public ASTNode visitIfBlock(antlr.ConsilioParser.IfBlockContext ctx) {
+    public ASTNode visitIfBlock(ConsilioParser.IfBlockContext ctx) {
         ASTNode ifNode = new ASTNode("If");
 
         ASTNode condition = visit(ctx.expression());
-        ASTNode body = visit(ctx.statement());
+        ASTNode body = new ASTNode("IfBody");
+
+        for (var stmt : ctx.statement()) {
+            body.adoptChildren(visit(stmt));
+        }
 
         ifNode.adoptChildren(condition, body);
         return ifNode;
     }
+
 
     @Override
     public ASTNode visitExpression(antlr.ConsilioParser.ExpressionContext ctx) {

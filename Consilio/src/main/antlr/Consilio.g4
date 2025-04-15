@@ -38,7 +38,7 @@ value
 valueType: INT | BOOLEAN | IDENTIFIER;
 
 action
-    : ACTION IDENTIFIER LPAREN parameterList RPAREN LBRACE statement RBRACE
+    : ACTION IDENTIFIER LPAREN parameterList RPAREN LBRACE statement* RBRACE
     ;
 
 parameterList
@@ -80,13 +80,12 @@ goal
     ;
 
 ifBlock
-    : IF LPAREN expression RPAREN LBRACE statement RBRACE
+    : IF LPAREN expression RPAREN LBRACE statement* RBRACE
     ;
 
 statement
     : ifBlock
     | assignment SEMI
-    | statement statement
 //    | expression        #expressionStatement
 //    | SEMI              #semiColon
     ;

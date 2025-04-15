@@ -43,7 +43,7 @@ public class SymbolTable {
     }
 
     /**
-     * Forsøger at læse en variabel i et scope. Skal kaldes når vi læser en variabel.
+     * Forsøger at læse en variabel i alle scopes. Skal kaldes når vi læser en variabel.
      * @param name navnet på variablen.
      * @return navnet på variablen eller en error.
      */

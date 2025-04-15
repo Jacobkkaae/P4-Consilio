@@ -28,11 +28,11 @@ public class ProblemVisitor extends GenericVisitor {
             String name = arrayInitCtx.IDENTIFIER(0).getText();
             String type = arrayInitCtx.IDENTIFIER(1).getText();
 
-            ASTNode typeName = new ASTNode("Type: " + name);
-            ASTNode arrayName = new ASTNode("Name: " + type);
+            ASTNode arrayName = new ASTNode("Name: " + name);
+            ASTNode arrayType = new ASTNode("Type: " + type);
             ASTNode values = visit(arrayInitCtx.arrayBody());
 
-            arrayInit.adoptChildren(typeName, arrayName, values);
+            arrayInit.adoptChildren(arrayName, arrayType, values);
             objectsNode.adoptChildren(arrayInit);
         }
 

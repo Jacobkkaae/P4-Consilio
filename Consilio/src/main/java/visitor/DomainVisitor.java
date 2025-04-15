@@ -62,15 +62,19 @@ public class DomainVisitor extends GenericVisitor {
     public ASTNode visitAction(ConsilioParser.ActionContext ctx) {
         ASTNode actionNode = new ASTNode("Action: " + ctx.IDENTIFIER().getText());
 
-        ASTNode paramList = new ASTNode("Parameters");
-        for (ConsilioParser.ParameterContext param : ctx.parameterList().parameter()) {
-            paramList.adoptChildren(new ASTNode(param.IDENTIFIER().getFirst() + " " + param.IDENTIFIER().getLast()));
+        ASTNode params = new ASTNode("Parameters");
+        for (var param : ctx.parameterList().parameter()) {
+            params.adoptChildren(new ASTNode(
+                    "Param: " + param.IDENTIFIER(0).getText() + " " + param.IDENTIFIER(1).getText()
+            ));
         }
-        actionNode.adoptChildren(paramList);
 
-        ASTNode body = visit(ctx.statement());
-        actionNode.adoptChildren(body);
+        ASTNode body = new ASTNode("ActionBody");
+        for (var stmt : ctx.statement()) {
+            body.adoptChildren(stmt.accept(new GenericVisitor()));
+        }
 
+        actionNode.adoptChildren(params, body);
         return actionNode;
     }
     // når vi besøger en action skal vores scope stack, pushe alle objects af den tilsvarende parameter
