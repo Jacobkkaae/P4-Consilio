@@ -33,12 +33,13 @@ public class SymbolTable {
      * @param name navnet på variablen.
      * @param type typen af variablen
      */
-    public void enterSymbol(String name, String type) {
+    public void enterSymbol(String name, String type, SymbolKind kind) {
         Map<String, Symbol> current = scopeStack.peek();
         if (current != null && !current.containsKey(name)) {
-            current.put(name, new Symbol(name, type));
+            current.put(name, new Symbol(name, type, kind));
         } else {
-            System.err.println("Invalid redeclaration of symbol: " + name);
+            //throw new RuntimeException("Symbol of type, '" + type +"' with name '" + name + "' already exists"); //For final implementation
+            System.err.println("Symbol of type, '" + type +"' with name '" + name + "' already exists"); //For coding
         }
     }
 
@@ -54,6 +55,15 @@ public class SymbolTable {
             }
         }
         throw new RuntimeException("Symbol not found");
+    }
+
+    public boolean isTypeDeclared(String name) {
+        try {
+            Symbol sym = retrieveSymbol(name);
+            return sym.getKind() == SymbolKind.TYPE;
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     public void dump() {

@@ -2,6 +2,8 @@ package SymbolTable;
 
 import visitor.ASTNode;
 import visitor.GenericVisitor;
+import SymbolTable.SymbolTable;
+import java.util.*;
 
 
 public class SymbolTableBuilder {
@@ -20,6 +22,7 @@ public class SymbolTableBuilder {
             case "Domain" -> visitDomain(node);
             case "Problem" -> visitProblem(node);
             case "TypeDeclaration" -> visitTypeDeclaration(node);
+            //case "Objects" -> visitObjects(node);
             case "ArrayInit" -> visitArrayInit(node);
             case "Parameters" -> visitParameters(node);
             case "Assignment" -> visitAssignment(node);
@@ -83,24 +86,41 @@ public class SymbolTableBuilder {
 
     private void visitTypeDeclaration(ASTNode node) {
         String typeName = node.children.getFirst().type.replace("Name: ", "");
-        symTable.enterSymbol(typeName, "TYPE");
+        symTable.enterSymbol(typeName, "Type", SymbolKind.TYPE);
+        visitChildren(node);
+    }
+
+    private void visitObjects(ASTNode node) {
+        String name = node.children.get(0).type.replace("Name: ", "");
+        String type = node.children.get(1).type.replace("Type: ", "");
+
+        symTable.enterSymbol(name, type, SymbolKind.OBJECT);
         visitChildren(node);
     }
 
     private void visitArrayInit(ASTNode node) {
+        String arrayName = node.children.get(0).type.replace("Name: ", "");
         String type = node.children.get(1).type.replace("Type: ", "");
+
+        if (!symTable.isTypeDeclared(type)) {
+            throw new RuntimeException("Error: Type '" + type + "' is not declared.");
+        }
+
+        symTable.enterSymbol(arrayName, "Array", SymbolKind.ARRAY);
+
         ASTNode values = node.children.get(2);
         for (ASTNode value : values.children) {
             String name = value.type.replace("Object: ", "");
-            symTable.enterSymbol(name, type);
+            symTable.enterSymbol(name, type + "[]", SymbolKind.OBJECT);
         }
     }
+
 
     private void visitParameters(ASTNode node) {
         for (ASTNode param : node.children) {
             String[] parts = param.type.split(" ");
             if (parts.length == 2) {
-                symTable.enterSymbol(parts[1], parts[0]);
+                symTable.enterSymbol(parts[1], parts[0], SymbolKind.PARAMETER);
             }
         }
     }

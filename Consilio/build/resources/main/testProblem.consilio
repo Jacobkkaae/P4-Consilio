@@ -5,6 +5,7 @@ objects{
     robots robot[] = {r1};
     packages package[] = {p1, p2, p3};
     rooms room[] = {ro1, ro2};
+    robots robot[] = {r1};
 }
 
 initialState{
